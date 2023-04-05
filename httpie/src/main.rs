@@ -52,7 +52,7 @@ struct KvPair {
 impl FromStr for KvPair {
     type Err = anyhow::Error;
 
-    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
         // 使用 = 分割
         let mut split = s.split("=");
         let err = || anyhow!(format!("Failed to parse {}", s));
