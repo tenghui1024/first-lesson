@@ -39,7 +39,7 @@ async fn main() {
                 .into_inner(),
         );
     // 运行web服务器
-    let addr = "127.0.0.1:3000".parse().unwrap();
+    let addr = "127.0.0.1:3001".parse().unwrap();
 
     print_test_url("https://images.pexels.com/photos/1562477/pexels-photo-1562477.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260");
 
@@ -118,5 +118,5 @@ fn print_test_url(url: &str) {
     let image_spec = ImageSpec::new(vec![spec1, spec2, spec3]);
     let s: String = image_spec.borrow().into();
     let test_image = percent_encode(url.as_bytes(), NON_ALPHANUMERIC).to_string();
-    println!("test url: http://localhost:3000/image/{}/{}", s, test_image);
+    println!("test url: http://localhost:3001/image/{}/{}", s, test_image);
 }
