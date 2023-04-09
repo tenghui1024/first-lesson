@@ -3,6 +3,7 @@ use polars::prelude::*;
 use queryer::query;
 use std::io::Cursor;
 
+/// 执行 cargo run --example covid --quiet 进行测试
 #[tokio::main]
 async fn main() -> Result<()> {
     tracing_subscriber::fmt::init();

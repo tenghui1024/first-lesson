@@ -1,5 +1,6 @@
 use sqlparser::{dialect::GenericDialect, parser::Parser};
 
+/// 执行 cargo run --example dialect --quiet 进行测试
 fn main() {
     tracing_subscriber::fmt::init();
 

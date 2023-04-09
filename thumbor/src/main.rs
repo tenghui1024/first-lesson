@@ -28,6 +28,9 @@ use engine::{Engine, Photon};
 use image::ImageOutputFormat;
 use pb::*;
 
+/// 编译、运行并访问给出的test url 进行测试
+/// cargo build --release
+/// RUST_LOG=info target/release/thumbor
 #[tokio::main]
 async fn main() {
     // 初始化 tracing

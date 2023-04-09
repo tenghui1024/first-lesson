@@ -11,6 +11,9 @@ use syntect::{
     util::{as_24_bit_terminal_escaped, LinesWithEndings},
 };
 
+/// 编译并进行测试
+/// cargo build --release
+/// RUST_LOG=info target/release/httpie post https://httpbin.org/post greting=hola name=Tyr
 #[tokio::main]
 async fn main() -> Result<()> {
     let opts: Opts = Opts::parse();
