@@ -32,7 +32,7 @@ async fn main() -> Result<()> {
     // 使用 sql 从 URL 里获取数据
     let sql = format!(
         "SELECT location name, total_cases, new_cases, total_deaths, new_deaths \
-        FROM {} where new_death >= 500 ORDER BY new_cases DESC",
+        FROM {} where new_deaths >= 500 ORDER BY new_cases DESC",
         url
     );
     let df1 = query(sql).await?;
