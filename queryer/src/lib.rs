@@ -1,8 +1,6 @@
 use anyhow::{anyhow, Result};
-use dialect::TyrDialect;
 use polars::prelude::*;
 use sqlparser::parser::Parser;
-use std::convert::TryInto;
 use std::ops::{Deref, DerefMut};
 use tracing::info;
 
@@ -13,6 +11,9 @@ mod loader;
 use convert::Sql;
 use fetcher::retrieve_data;
 use loader::detect_content;
+
+pub use dialect::example_sql;
+pub use dialect::TyrDialect;
 
 #[derive(Debug)]
 pub struct DataSet(DataFrame);

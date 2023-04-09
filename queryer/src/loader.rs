@@ -27,8 +27,7 @@ impl Loader {
 }
 
 pub fn detect_content(data: String) -> Loader {
-    // TODO: 内容检测 根据检测的内容返回Loader中对应格式的Loader
-    // 目前只支持Csv enum中只有CsvLoader, 直接返回
+    // TODO: 内容检测
     Loader::Csv(CsvLoader(data))
 }
 

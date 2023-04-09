@@ -28,7 +28,7 @@ pub struct Value(pub(crate) SqlValue);
 impl<'a> TryFrom<&'a Statement> for Sql<'a> {
     type Error = anyhow::Error;
 
-    fn try_from(sql: &'a Statement) -> std::result::Result<Self, Self::Error> {
+    fn try_from(sql: &'a Statement) -> Result<Self, Self::Error> {
         match sql {
             Statement::Query(q) => {
                 let offset = q.offset.as_ref();
@@ -162,7 +162,7 @@ impl<'a> TryFrom<Source<'a>> for &'a str {
 
         match &table.relation {
             TableFactor::Table { name, .. } => Ok(&name.0.first().unwrap().value),
-            _ => return Err(anyhow!("We only support table")),
+            _ => Err(anyhow!("We only support table")),
         }
     }
 }
@@ -171,7 +171,7 @@ impl<'a> TryFrom<Source<'a>> for &'a str {
 impl<'a> TryFrom<Order<'a>> for (String, bool) {
     type Error = anyhow::Error;
 
-    fn try_from(o: Order<'a>) -> Result<Self, Self::Error> {
+    fn try_from(o: Order) -> Result<Self, Self::Error> {
         let name = match &o.0.expr {
             SqlExpr::Identifier(id) => id.to_string(),
             expr => {
@@ -219,5 +219,28 @@ impl TryFrom<Value> for LiteralValue {
             SqlValue::Null => Ok(LiteralValue::Null),
             v => Err(anyhow!("Value {} is not supported", v)),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::TyrDialect;
+    use sqlparser::parser::Parser;
+
+    #[test]
+    fn parse_sql_works() {
+        let url = "http://abc.xyz/abc?a=1&b=2";
+        let sql = format!(
+            "select a, b, c from {} where a=1 order by c desc limit 5 offset 10",
+            url
+        );
+        let statement = &Parser::parse_sql(&TyrDialect::default(), sql.as_ref()).unwrap()[0];
+        let sql: Sql = statement.try_into().unwrap();
+        assert_eq!(sql.source, url);
+        assert_eq!(sql.limit, Some(5));
+        assert_eq!(sql.offset, Some(10));
+        assert_eq!(sql.order_by, vec![("c".into(), true)]);
+        assert_eq!(sql.selection, vec![col("a"), col("b"), col("c")]);
     }
 }
