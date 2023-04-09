@@ -1,3 +1,4 @@
+mod convert;
 mod dialect;
 
 pub fn add(left: usize, right: usize) -> usize {
