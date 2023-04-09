@@ -3,4 +3,5 @@
 members = [
 	"httpie",
 	"thumbor",
+	"queryer",
 ]
