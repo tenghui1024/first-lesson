@@ -19,7 +19,7 @@ async fn main() -> Result<()> {
         "{:?}",
         filtered.select((
             "location",
-            "total_case",
+            "total_cases",
             "new_cases",
             "total_deaths",
             "new_deaths"
