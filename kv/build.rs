@@ -3,7 +3,7 @@ fn main() {
     config.bytes(&["."]);
     config.type_attribute(".", "#[derive(PartialOrd)]");
     config
-        .out_dir("src/bp")
+        .out_dir("src/pb")
         .compile_protos(&["abi.proto"], &["."])
         .unwrap();
 }
