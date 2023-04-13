@@ -5,6 +5,7 @@ use kv::{CommandRequest, CommandResponse};
 use tokio::net::TcpStream;
 use tracing::info;
 
+/// 执行 RUST_LOG=info cargo run --example client --quiet 进行测试
 #[tokio::main]
 async fn main() -> Result<()> {
     tracing_subscriber::fmt::init();
