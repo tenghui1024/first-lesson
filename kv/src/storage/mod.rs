@@ -4,11 +4,17 @@ pub use memory::MemTable;
 
 /// 存储对象的抽象
 pub trait Storage {
+    /// 从一个HashTable里获取一个key 的 value
     fn get(&self, table: &str, key: &str) -> Result<Option<Value>, KvError>;
+    /// 从一个HashTable里设置一个key的value
     fn set(&self, table: &str, key: String, value: Value) -> Result<Option<Value>, KvError>;
+    /// 查看HashTable中是否有key
     fn contains(&self, table: &str, key: &str) -> Result<bool, KvError>;
+    /// 从HashTable中删除一个key
     fn del(&self, table: &str, key: &str) -> Result<Option<Value>, KvError>;
+    /// 遍历HashTable返回所有的kv pair
     fn get_all(&self, table: &str) -> Result<Vec<Kvpair>, KvError>;
+    /// 遍历HashTable, 返回kv pair 的Iterator
     fn get_iter(&self, table: &str) -> Result<Box<dyn Iterator<Item = Kvpair>>, KvError>;
 }
 
