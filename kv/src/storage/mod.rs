@@ -2,6 +2,7 @@ mod memory;
 mod sleddb;
 use crate::{KvError, Kvpair, Value};
 pub use memory::MemTable;
+pub use sleddb::SledDb;
 
 /// 存储对象的抽象
 pub trait Storage {
