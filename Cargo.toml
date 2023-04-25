@@ -5,4 +5,5 @@ members = [
 	"thumbor",
 	"queryer",
 	"kv",
+	"con-utils",
 ]
