@@ -266,4 +266,22 @@ mod tests {
         });
         t1.join().unwrap();
     }
+
+    #[test]
+    fn channel_fast_path_should_work() {
+        let (mut s, mut r) = unbounded();
+        for i in 0..10usize {
+            s.send(i).unwrap();
+        }
+
+        assert!(r.cache.is_empty());
+        assert_eq!(0, r.recv().unwrap());
+
+        assert_eq!(9, r.cache.len());
+        assert_eq!(0, s.total_queued_items());
+
+        for (idx, i) in r.into_iter().take(9).enumerate() {
+            assert_eq!(idx + 1, i);
+        }
+    }
 }
