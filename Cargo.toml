@@ -7,4 +7,5 @@ members = [
 	"kv",
 	"con-utils",
 	"asynchronous",
+	"async-internals",
 ]

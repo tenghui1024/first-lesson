@@ -143,6 +143,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "async-internals"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "futures",
+ "pin-project",
+ "tokio",
+]
+
+[[package]]
 name = "async-prost"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
