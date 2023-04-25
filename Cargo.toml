@@ -6,4 +6,5 @@ members = [
 	"queryer",
 	"kv",
 	"con-utils",
+	"asynchronous",
 ]
