@@ -140,3 +140,23 @@ async fn write_hello_file_async(name: &str) -> Result<()> {
  * }
  *
  */
+
+/*
+ 并发任务运行在 Future 这样的协程上时，
+ async/await 是产生和运行并发任务的手段，
+ async 定义一个可以并发执行的 Future 任务，
+ await 触发这个任务并发执行。
+ 具体来说：当我们使用 async 关键字时，它会产生一个 impl Future 的结果。
+ 对于一个 async block 或者 async fn 来说，内部的每个 await 都会被编译器捕捉，
+ 并成为返回的 Future 的 poll() 方法的内部状态机的一个状态。
+ Rust 的 Future 需要异步运行时来运行 Future，
+ 以 tokio 为例，它的 executor 会从 run queue 中取出 Future 进行 poll()，
+ 当 poll() 返回 Pending 时，这个 Future 会被挂起，
+ 直到 reactor 得到了某个事件，唤醒这个 Future，
+ 将其添加回 run queue 等待下次执行。
+ tokio 一般会在每个物理线程（或者 CPU core）下运行一个线程，
+ 每个线程有自己的 run queue 来处理 Future。
+ 为了提供最大的吞吐量，tokio 实现了 work stealing scheduler，
+ 这样，当某个线程下没有可执行的 Future，
+ 它会从其它线程的 run queue 中“偷”一个执行。
+*/
