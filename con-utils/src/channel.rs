@@ -20,6 +20,7 @@ pub struct Sender<T> {
 
 pub struct Receiver<T> {
     shared: Arc<Shared<T>>,
+    cache: VecDeque<T>,
 }
 
 impl<T> Sender<T> {
@@ -54,14 +55,27 @@ impl<T> Sender<T> {
 
 impl<T> Receiver<T> {
     pub fn recv(&mut self) -> Result<T> {
+        // 无锁 fast path
+        if let Some(v) = self.cache.pop_front() {
+            return Ok(v);
+        }
+
+        // 需要抢锁 slow path
         let mut inner = self.shared.queue.lock().unwrap();
         loop {
             match inner.pop_front() {
                 Some(t) => {
+                    // 如果当前队列中还有数据，把消费者自身的缓存队列和共享队列swap一下
+                    if !inner.is_empty() {
+                        std::mem::swap(&mut self.cache, &mut inner);
+                    }
                     return Ok(t);
                 }
+
+                // 共享队列也没有数据，并切所有生产者退出了，释放锁并放回错误
                 None if self.total_senders() == 0 => return Err(anyhow!("no sender left")),
                 None => {
+                    // Condvar被唤醒后去loop拿数据
                     inner = self
                         .shared
                         .available
@@ -116,7 +130,10 @@ pub fn unbounded<T>() -> (Sender<T>, Receiver<T>) {
         Sender {
             shared: shared.clone(),
         },
-        Receiver { shared },
+        Receiver {
+            shared,
+            cache: VecDeque::with_capacity(INITIAL_SIZE),
+        },
     )
 }
 
