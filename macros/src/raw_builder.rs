@@ -43,7 +43,7 @@ impl Fd {
             Some(TokenTree::Ident(name)) => {
                 // 如果ty第0项是Option, 那么从第二项到倒数第一项
                 // 取完后上面的例子中的ty会变成["String"], optional=true
-                let (ty, optional) = if ty[0].as_str() == "Optional" {
+                let (ty, optional) = if ty[0].as_str() == "Option" {
                     (&ty[2..ty.len() - 1], true)
                 } else {
                     (&ty[..], false)
@@ -110,20 +110,18 @@ fn get_struct_fields(input: TokenStream) -> Vec<Fd> {
     let input = input.into_iter().collect::<Vec<_>>();
     input
         .split(|v| match v {
-            // TokenTree::Punct(p) => p.as_char() == ",",
-            TokenTree::Punct(p) => p.to_string() == ",",
+            TokenTree::Punct(p) => p.as_char() == ',',
             _ => false,
         })
         .map(|tokens| {
             tokens
                 .split(|v| match v {
-                    // TokenTree::Punct(p) => p.as_char() == ":",
-                    TokenTree::Punct(p) => p.to_string() == ":",
+                    TokenTree::Punct(p) => p.as_char() == ':',
                     _ => false,
                 })
                 .collect::<Vec<_>>()
         })
         .filter(|tokens| tokens.len() == 2)
-        .map(|tokens| Fd::new(tokens[0], &tokens[1]))
+        .map(|tokens| Fd::new(tokens[0], tokens[1]))
         .collect()
 }
