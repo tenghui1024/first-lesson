@@ -88,8 +88,8 @@ impl BuilderContext {
         let methods = self.gen_methods();
         let assigns = self.gen_assigns();
 
-        quote!(
-            /// Builder结构
+        quote! {
+            /// Builder 结构
             #[derive(Debug, Default)]
             struct #builder_name {
                 #(#optionized_fields,)*
@@ -112,17 +112,13 @@ impl BuilderContext {
                     Default::default()
                 }
             }
-        )
+        }
     }
 
     fn gen_optionized_fields(&self) -> Vec<TokenStream> {
         self.fields
             .iter()
-            .map(|Fd { name, ty, .. }| {
-                quote! {
-                    #name: std::option::Option<#ty>
-                }
-            })
+            .map(|Fd { name, ty, .. }| quote! { #name: std::option::Option<#ty> })
             .collect()
     }
 
@@ -151,7 +147,7 @@ impl BuilderContext {
                 }
 
                 quote! {
-                    #name: self.#name.take().ok_or(concat!(stringify(#name)))
+                    #name: self.#name.take().ok_or(concat!(stringify!(#name), " needs to be set!"))?
                 }
             })
             .collect()
