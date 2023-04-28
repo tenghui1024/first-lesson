@@ -11,6 +11,7 @@ use syn::{
     TypePath,
 };
 
+/// 在Builder的基础上新增用于捕获attributes的数据结构
 #[derive(Debug, Default, FromField)]
 #[darling(default, attributes(builder))]
 struct Opts {
@@ -23,6 +24,9 @@ struct Fd {
     name: Ident,
     ty: Type,
     optional: bool,
+    // 用来描述该字段是否有each, default属性
+    // 有的话在render里生成method的时候进行特殊处理
+    // 新增字段是field级别, 所以对应的From实现里也要修改
     opts: Opts,
 }
 
@@ -151,6 +155,7 @@ impl BuilderContext {
                 let name = &f.name;
                 let ty = &f.ty;
                 // 如果不是Option类型, 且定义了each attribute
+                // 则该字段赋值方法允许多次调用, 需要一个Vec来push每次调用添加的值
                 if !f.optional && f.opts.each.is_some() {
                     let each = Ident::new(f.opts.each.as_deref().unwrap(), name.span());
                     let (is_vec, ty) = get_vec_inner(ty);
@@ -188,6 +193,7 @@ impl BuilderContext {
                 // 如果定义了default那么把default里的字符串转换成TokenStream
                 // 使用unwrap_or_else
                 // 在没有值的时候使用缺省结果
+                // 对default 属性宏 进行处理
                 if let Some(default) = opts.default.as_ref() {
                     let ast: TokenStream = default.parse().unwrap();
                     return quote! {
